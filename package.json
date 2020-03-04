@@ -1,6 +1,6 @@
 {
   "name": "@adventurousway/config",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Standardized configuration and secret management for Adventurous Way",
   "main": "lib/index.js",
   "scripts": {
