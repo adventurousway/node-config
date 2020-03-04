@@ -1,0 +1,53 @@
+{
+  "name": "@adventurousway/config",
+  "version": "0.0.1",
+  "description": "Standardized configuration and secret management for Adventurous Way",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel --delete-dir-on-start -d ./lib ./src",
+    "dev": "babel --delete-dir-on-start --verbose -w -d ./lib ./src",
+    "version": "npm run build",
+    "postversion": "git push && git push --tags && npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adventurousway/node-config.git"
+  },
+  "keywords": [
+    "config",
+    "env",
+    "secret",
+    "docker"
+  ],
+  "author": "Matt Knight <matt@adventurousway.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adventurousway/node-config/issues"
+  },
+  "homepage": "https://github.com/adventurousway/node-config#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.6",
+    "@babel/preset-env": "^7.8.6"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ],
+    "plugins": []
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {}
+}
