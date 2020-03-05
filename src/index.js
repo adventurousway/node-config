@@ -4,9 +4,23 @@ import path from 'path';
 const configs = {};
 const secrets = {};
 
-export const getConfig = key => configs[key] || null;
+export const getConfig = key =>
+  key ? (configs.hasOwnProperty(key) ? configs[key] : null) : configs;
 
-export const getSecret = key => secrets[key] || null;
+export const getSecret = key =>
+  key ? (secrets.hasOwnProperty(key) ? secrets[key] : null) : secrets;
+
+const parseConfigValue = value => {
+  if (typeof value === 'string' && ['yes', 'true'].includes(value.toLowerCase())) {
+    return true;
+  }
+
+  if (typeof value === 'string' && ['no', 'false'].includes(value.toLowerCase())) {
+    return false;
+  }
+
+  return value;
+};
 
 export const initConfig = (keys = [], { log } = {}) => {
   keys.forEach(k => {
@@ -27,16 +41,15 @@ export const initConfig = (keys = [], { log } = {}) => {
 
     const envKey = key.toUpperCase();
 
-    configs[key] = process.env[envKey] || defaultValue;
-
     if (process.env.hasOwnProperty(envKey)) {
-      configs[key] = process.env[envKey];
+      configs[key] = parseConfigValue(process.env[envKey]);
       log &&
         log.info(
           { env: { name: key, config: k, value: configs[key] } },
           `Loaded configuration variable`
         );
     } else {
+      configs[key] = defaultValue;
       log &&
         log.info(
           { env: { name: key, config: k, value: configs[key] } },
