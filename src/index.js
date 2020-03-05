@@ -65,7 +65,18 @@ export const initSecrets = (keys = [], { log, dir, trim = true } = {}) => {
   log && log.info({ secretsDir }, 'Secret loading starting');
 
   keys.forEach(k => {
-    const filename = process.env[`${k.toUpperCase()}_FILE`] || path.join(secretsDir, k);
+    let key;
+    let required = true;
+
+    if (typeof k === 'string') {
+      key = k;
+    } else if (typeof k === 'object') {
+      ({ name: key, required = false } = k);
+    } else {
+      throw new Error(`Invalid key type found: ${k}`);
+    }
+
+    const filename = process.env[`${key.toUpperCase()}_FILE`] || path.join(secretsDir, key);
 
     try {
       let value = fs.readFileSync(filename, 'utf-8');
@@ -74,11 +85,16 @@ export const initSecrets = (keys = [], { log, dir, trim = true } = {}) => {
         value = value.trim();
       }
 
-      secrets[k] = value;
+      secrets[key] = value;
 
-      log && log.info({ secret: { name: k, path: filename } }, `Secret loaded`);
+      log && log.info({ secret: { name: key, path: filename } }, `Secret loaded`);
     } catch (err) {
-      log && log.error({ err, secret: { name: k, path: filename } }, `Error loading secret`);
+      if (required) {
+        log && log.error({ err, secret: { name: key, path: filename } }, `Error loading required secret`);
+        throw new Error(`Could not load required secret [${key}] from path: ${filename}`);
+      } else {
+        log.info({ secret: { name: key, path: filename } }, `Secret could not be loaded but is marked as not-required`);
+      }
     }
   });
 };
