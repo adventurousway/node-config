@@ -14,7 +14,7 @@ export const initConfig = (keys = [], { log } = {}) => {
     let defaultValue = null;
 
     if (typeof k === 'string') {
-      key = k.toUpperCase();
+      key = k;
     } else if (typeof k === 'object') {
       ({ name: key, defaultValue = null } = k);
     } else {
